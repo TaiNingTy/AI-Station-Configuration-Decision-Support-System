@@ -68,7 +68,7 @@ Agent 2 的检索为**每轮自动调用**、混合搜索、低匹配阈值、�
 
 三件事永远交还给人：**最终配置、工程可实施性、商业/预算决策。** 流水线会在交付文档顶部显式标出这些（标注"需人工决策"），而不是替人做决定。
 
-> **状态 (V1.1，Phase A — 已验证)：** 确定性规则门禁已作为一个 Coze 工作流部署 —— Code 节点硬判 PASS/FAIL，条件分支把 Critical FAIL 路由离开配置路径（已验证：曲线半径 27m → `BLOCKED`、35m → `PASS`、直线段 → `PASS`）。把它接到配置生成 Agent 前面（让 BLOCKED 永远到不了 Agent 3）是 Phase B。见 [`docs/v1.1-rule-gate-plan.md`](docs/v1.1-rule-gate-plan.md)。
+> **状态 (V1.1 — 已验证)：** 确定性规则门禁已作为 Coze 工作流部署，并在任一 Critical FAIL 时**物理阻断下游生成** —— Code 节点硬判 PASS/FAIL、条件分支据此路由。用 token 计数证明：`curve_radius_m=27` → `BLOCKED`，生成节点**根本没执行（0 tokens，1s）**；`35` → `PASS`，生成节点执行（1431 tokens，32s）。LLM 只*解释*判定。（PASS 分支上的生成节点是代表性步骤；把完整 KB→规则校验→文档 Agent 接到它后面是进一步集成 —— 门禁行为完全一致。）见 [`docs/v1.1-rule-gate-plan.md`](docs/v1.1-rule-gate-plan.md)。
 
 ## 6. Demo —— 两个测试案例
 
@@ -99,8 +99,8 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 ## 9. 路线图
 
 - **本仓库 —— V1 公开 Demo** ✅ 知识库 + agentic workflow 规则校验 + 配置推荐 + 人工复核交接
-- **V1.1 · Phase A（已完成）** 确定性规则门禁已作为 Coze 工作流部署 —— Code 节点硬判 PASS/FAIL，条件分支阻断 Critical FAIL（已验证 27m→`BLOCKED` / 35m→`PASS`）。代码：[`skills/rule-check.js`](skills/rule-check.js)。
-- **V1.1 · Phase B（下一步）** 把门禁接到配置生成 Agent 前面，让 BLOCKED 案例永远到不了 Agent 3。
+- **V1.1（已完成）** 确定性规则门禁已部署并验证 —— Code 硬判 PASS/FAIL；Critical FAIL **物理阻断**下游生成（27→`BLOCKED`，生成节点 **0 tokens**；35→`PASS`，生成节点执行）。代码：[`skills/rule-check.js`](skills/rule-check.js)。
+- **V1.2（下一步）** 把完整 KB→规则校验→文档 Agent 接到门禁的 PASS 分支后（门禁行为一致）。
 - **V2** GIS/CAD 接入、需求预测、站点仿真
 - **V3** 优化引擎、自动迭代
 

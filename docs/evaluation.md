@@ -11,11 +11,11 @@
 | 关键规则命中 | ✅ 分级/容量 | ✅ 曲线半径<30m | ⬜ |
 | 所有引用存在于 KB（可溯源） | ✅ | ✅ | ⬜ |
 | 无外部虚构标准 | ✅ | ✅ | ⬜ |
-| Critical FAIL 后阻断生成 | n/a（无硬约束） | ✅ 门禁工作流已验证（27→BLOCKED / 35→PASS）；接入主管线 = Phase B | ⬜ |
+| Critical FAIL 后阻断生成 | n/a（无硬约束） | ✅ **物理阻断已验证**：27→BLOCKED 生成节点 0 tokens（未执行）；35→PASS 生成节点 1431 tokens（执行）| ⬜ |
 | 必备报告章节完整（0–5） | 5 | **N/A（Agent 3 待重跑）** | ⬜ |
 | 端到端耗时 | ~60s | ~45s（仅 A1+A2）| ⬜ |
 
-> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Central Hub 已验证 **Agent 1+2**，**Agent 3 待重跑**（故 Document Quality 记 N/A）；TC3 Hilltop **尚未运行**；确定性门禁已作为独立 Coze 工作流**部署并验证**（27→BLOCKED / 35→PASS，Phase A），接入主管线为 Phase B。
+> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Central Hub 已验证 **Agent 1+2**，**Agent 3 待重跑**（故 Document Quality 记 N/A）；TC3 Hilltop **尚未运行**；确定性门禁已作为独立 Coze 工作流**部署并验证物理阻断**：27→BLOCKED 时下游生成节点 0 tokens（未执行），35→PASS 时执行（1431 tokens）—— 用 token 计数证明 Critical FAIL 真正阻断生成。
 
 ## B. 定性维度（辅助，1–5）
 
