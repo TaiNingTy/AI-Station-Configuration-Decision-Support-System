@@ -3,7 +3,9 @@
 Actual outputs from the deployed Coze agentic-workflow bot (豆包 2.0 pro).
 Two test cases, each showcasing a different capability.
 
-> **KB v1.1 note:** the single-space capacity constant was corrected (120 → 300 pax/h) so the rule set is internally consistent. TC1 below reflects the corrected *expected* behavior; its raw JSON is **re-captured on re-run** with the updated KB. TC2 is unaffected (its blocker is the curve radius) and shows the original raw output.
+**Full verbatim traces:** [`tc1-greenfield-raw.md`](tc1-greenfield-raw.md) · [`tc2-central-hub-raw.md`](tc2-central-hub-raw.md)
+
+> **KB v1.1 note:** the single-space capacity constant was corrected (120 → 300 pax/h) so the rule set is internally consistent. TC1 below is the **real re-run output** on the updated KB (2026-08-16). TC2 is unaffected (its blocker is the curve radius) and shows its original raw output.
 
 ---
 
@@ -19,23 +21,27 @@ Two test cases, each showcasing a different capability.
   "key_constraints": ["低洼积水", "市电300m外", "带状用地"] }
 ```
 
-### Agent 2 — Retrieval + Rule Evaluation
-Grounded compliance check — every citation traces to the KB (expected output, KB v1.1):
+### Agent 2 — Retrieval + Rule Evaluation (real output, KB v1.1)
+Grounded compliance check — sources trace to `KB_01` / `KB_02`, no fabrication:
 ```json
 {
   "compliance_check": [
-    {"item": "车位容量", "status": "合规", "detail": "500 ÷ 300 = 2 车位，在 B 级上限(2)内"},
-    {"item": "场地排水", "status": "待整改", "detail": "低洼 + 雨季积水 → 需排水沟、抬高站台（参照案例A）"}
+    {"item":"站点分级匹配","status":"合规","detail":"500人/h 属 B 级区间(200-600)，1–2 月台即可"},
+    {"item":"用地规模适配","status":"合规","detail":"6m×35m 可布侧式站台(净宽≥2.5m)+候车区≥15㎡"},
+    {"item":"无障碍设施","status":"合规","detail":"B 级仅需坡道/盲道/高差达标，无需电梯"},
+    {"item":"供电接入距离","status":"知识库未覆盖","detail":"KB 未规定市电接入距离限值"}
   ],
-  "similar_cases": ["案例A：Riverside 郊区低洼通勤站（450 pax/h，抬高 0.3m + 排水沟）"]
+  "risks": [
+    {"risk":"雨季积水/湿滑","severity":"中","mitigation":"抬高地坪 >30cm + 排水沟"},
+    {"risk":"300m 市电压降/成本超支","severity":"中","mitigation":"核算线径与敷设成本"}
+  ],
+  "similar_cases": []
 }
 ```
-> The value here is **grounded validation + risk surfacing + precedent reuse** — not a manufactured conflict. Sources trace to `KB_02/KB_03`; case A from `KB_04`. No fabricated standards. *(Raw trace re-captured on re-run with KB v1.1.)*
+> Correctly grades **B (no false "upgrade to A")**, attributes to `KB_01`/`KB_02`, and honestly marks *"not covered"* where no rule exists. The KB_04 historical-case retrieval is **intermittent** (empty this run; it surfaced in other runs) — a known retrieval-coverage limitation, noted as future work (per-chunk metadata / case-retrieval routing).
 
-### Agent 3 — Configuration + Documentation (excerpt)
-Produced a full Markdown delivery doc with a config table (item / value / **basis** / **confidence**),
-a human-review risk table (drainage/flood evaluation, 300m grid-power feasibility, accessibility sign-off),
-a staged checklist, and design rationale. *(Re-captured on re-run with KB v1.1.)*
+### Agent 3 — Configuration + Documentation (real output)
+A full Markdown delivery doc for a **compliant B-grade** station: a config table (side platform net width 2.5m / 100% canopy / accessibility ramp 7% / 20 bike spaces) with **KB citations + confidence scores**; a human-review risk table (drainage, 300m grid-power, KB-not-covered items → joint expert review); a staged checklist (design → construction → acceptance); and design rationale (side-platform choice, cost control — **no A-grade upgrade, no elevator needed**).
 
 ---
 

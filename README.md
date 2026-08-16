@@ -74,7 +74,7 @@ Full outputs in [`results/sample-runs.md`](results/sample-runs.md).
 
 | Case | Input | What the system did |
 |---|---|---|
-| **TC1 · Greenfield** (compliant) | 500 pax/h, low-lying, B-grade | **Grounded validation + risk surfacing:** confirms B-grade capacity holds (500 ÷ 300 = 2 spaces, within the B-grade cap), flags the low-lying **drainage risk**, and reuses the analogous Riverside case from KB_04 — every citation traceable, nothing fabricated. |
+| **TC1 · Greenfield** (compliant) | 500 pax/h, low-lying, B-grade | **Grounded validation + risk surfacing:** confirms B-grade holds (500 in the 200–600 band; site fits a 2-space side platform), flags the low-lying **drainage** and 300m **power** risks, and produces a full delivery doc with KB-cited config + confidence scores — every citation traceable to KB_01/KB_02, nothing fabricated. |
 | **TC2 · Central Hub** (hard) ⭐ | 1,800 pax/h, platform on a 27m-radius curve | **Hard-constraint catch:** radius 27m < 30m → *"not implementable."* Severity high, correct fix ("re-align to ≥30m"), and it surfaced a 28m→35m precedent — then **deferred to a human.** |
 
 TC2 is the thesis in one screen: **the AI recognizes an infeasible plan and stops, instead of confidently hallucinating a solution.**
