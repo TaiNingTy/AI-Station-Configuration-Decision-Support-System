@@ -18,10 +18,16 @@
   "station_grade": "S | A | B | C",
   "land_width_m": 0,
   "land_length_m": 0,
+  "platform_on_curve": false,
+  "curve_radius_m": null,
   "key_constraints": [],
   "owner_requirements": []
 }
 ```
+
+> `platform_on_curve` / `curve_radius_m` are extracted as **explicit typed fields** (not just free text) so the
+> deterministic gate ([`skills/rule-check.js`](../skills/rule-check.js), V1.1) can read a number.
+> If the platform is not on a curve, `platform_on_curve: false` and `curve_radius_m: null`.
 
 ## System prompt
 ```
