@@ -30,7 +30,7 @@
 ## S1. 建知识库（30 min）
 
 1. 左侧「资源库」→「知识库」→ 新建，命名 `Station-Knowledge-Base`，类型选「文本」。
-2. 把本目录 `knowledge_base/` 里的 4 个文件逐个上传（或复制内容为在线文档）：
+2. 把仓库 [`knowledge_base/`](../knowledge_base/) 里的 4 个文件逐个上传（或复制内容为在线文档）：
    - `KB_01_Planning_Guidelines.md` 规划规范
    - `KB_02_Engineering_Standards.md` 工程约束
    - `KB_03_Station_Rules.md` 站点配置规则
@@ -58,7 +58,7 @@
 
 **② LLM 节点1 —— Requirement Analysis**
 - 输入：`site_info`
-- 系统提示词：见 `02_Agent_Prompts.md` 的【Prompt 1】
+- 系统提示词：见 [`agents/01-requirement-analysis.md`](../agents/01-requirement-analysis.md)
 - 输出：让它输出 JSON。在节点「输出」里定义变量 `requirement_json`（String）。
 
 **③ 知识库节点（Knowledge Retrieval）**
@@ -69,7 +69,7 @@
 
 **④ LLM 节点2 —— Rule Evaluation**
 - 输入：`requirement_json` + `kb_chunks`
-- 系统提示词：见 `02_Agent_Prompts.md` 的【Prompt 2】
+- 系统提示词：见 [`agents/02-rule-evaluation.md`](../agents/02-rule-evaluation.md)
 - 输出：`evaluation_json`（含 命中规则 / 合规检查 / 风险清单）。
 
 **⑤ （可选）输出中间结果 = Human-in-the-loop 展示点**
@@ -78,7 +78,7 @@
 
 **⑥ LLM 节点3 —— Configuration + Documentation**
 - 输入：`requirement_json` + `evaluation_json`
-- 系统提示词：见 `02_Agent_Prompts.md` 的【Prompt 3】
+- 系统提示词：见 [`agents/03-configuration-doc.md`](../agents/03-configuration-doc.md)
 - 输出：`final_doc`（Markdown 格式的配置方案 + 设计说明 + Checklist）。
 
 **⑦ 结束节点（End）**
@@ -88,13 +88,13 @@
 按①→②→③→④→⑤→⑥→⑦顺序连好，注意每个节点的输入变量要「引用」上游节点的输出。
 
 ### 调试
-- 右上角「试运行」，粘贴 `01_Input_Sample.md` 里的样例。
+- 右上角「试运行」，粘贴 [`test-cases/inputs.md`](../test-cases/inputs.md) 里的样例。
 - 逐节点看输出。节点1 JSON 格式不对就回去在 prompt 里强调"只输出 JSON"。
 
 ---
 
 ## S3. 评估（1 h）
-1. 用 `03_Evaluation.md` 里的 3 个测试用例分别跑一遍。
+1. 用 [`evaluation.md`](evaluation.md) 里的 3 个测试用例分别跑一遍。
 2. 按评估表人工打分（准确性 / 合规 / 文档质量）。
 3. 截图保存每次运行结果 —— 面试要用。
 
@@ -102,7 +102,7 @@
 
 ## S4. 包装（1-2 h）
 1. 用「工作流」的分享/发布，或直接录屏走一遍完整流程。
-2. 讲解按 `04_Demo_Script.md` 的 5 分钟脚本。
+2. 讲解按 [`demo-script.md`](demo-script.md) 的 5 分钟脚本。
 3. 把架构图 + 评估表 + 截图放进 portfolio 一页。
 
 ---

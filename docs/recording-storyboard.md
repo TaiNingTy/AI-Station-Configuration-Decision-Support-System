@@ -66,7 +66,7 @@
 - **旁白 ZH**："第三个 agent 把这一切变成一份交付文档 —— 顶部标注'需人工决策'，带配置表、置信度、风险清单。是'待评审'，不是'自动通过'。"
 
 ### 🎬 S8 · 评估 + RAG 亮点（2:22–2:48）
-- **画面**：GitHub 的 `03_Evaluation.md` 和 README 第 8 节。
+- **画面**：GitHub 的 [`evaluation.md`](evaluation.md) 和 README 第 8 节。
 - **动作**：滑过评估表，停在"关键工程发现"那段。
 - **旁白 EN**：*"I evaluated it across five dimensions. And the most instructive part: the first version hallucinated — citing fake national standards. I traced it to a retrieval-grounding gap, fixed the settings and prompt, and got it to say 'not in the knowledge base' instead of making things up. For a RAG product, admitting uncertainty matters more than sounding complete."*
 - **旁白 ZH**："我用五个维度做了评估。最有价值的一段是：初版会幻觉 —— 引用假的国标。我把问题定位到检索没真正 grounding，调了设置和提示词，让它宁可说'知识库没有'也不编。对 RAG 产品来说，敢承认不确定，比听起来很完整更重要。"

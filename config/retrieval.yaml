@@ -1,0 +1,20 @@
+# Single source of truth for model + retrieval configuration.
+# Referenced by the README config table, the build playbook, and the knowledge-retrieval skill.
+
+model: doubao-2.0-pro
+
+retrieval:
+  mode: hybrid
+  auto_call: true          # retrieve every turn — grounding is enforced, not optional
+  top_k: 10
+  match_threshold: 0.15
+  rerank: true
+  query_rewrite: true
+
+knowledge_base:
+  version: demo-v1.1        # single-space capacity constant = 300 pax/h (v1.0 used 120 — inconsistent)
+  documents: [KB_01, KB_02, KB_03, KB_04]
+  parse: accurate           # accurate parse preserves tables (station-grade / waiting-facility tables)
+  chunking: hierarchical
+
+prompt_version: v1.1        # KB-only citation; external standards (GB/T, CJJ, JT) forbidden; honest "not covered"

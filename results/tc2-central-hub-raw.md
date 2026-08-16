@@ -1,6 +1,6 @@
 # TC2 · Central Hub — Full Raw Output (2026-08-15) ⭐
 
-Verbatim agent outputs. Input: see `01_Input_Sample.md` (Central Hub — 1,800 pax/h, platform on a 27m-radius curve).
+Verbatim agent outputs. Input: see [`test-cases/inputs.md`](../test-cases/inputs.md) (Central Hub — 1,800 pax/h, platform on a 27m-radius curve).
 Result: **hard-constraint catch** — radius 27m < 30m → *not implementable*, deferred to a human.
 
 ---

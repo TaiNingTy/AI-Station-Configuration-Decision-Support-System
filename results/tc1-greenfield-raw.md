@@ -1,6 +1,6 @@
 # TC1 · Greenfield — Full Raw Output (KB v1.1, 2026-08-16)
 
-Verbatim agent outputs from the deployed Coze bot. Input: see `01_Input_Sample.md` (Greenfield).
+Verbatim agent outputs from the deployed Coze bot. Input: see [`test-cases/inputs.md`](../test-cases/inputs.md) (Greenfield).
 Result: **compliant B-grade** station — no false upgrade, KB-grounded, honest "not covered" flags.
 
 ---

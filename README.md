@@ -48,9 +48,11 @@ Site brief
 
 | Agent | Job | Output |
 |---|---|---|
-| **1 · Requirement Analysis** | Parse the site brief, classify station grade (S/A/B/C) | `requirement.json` |
-| **2 · Retrieval + Rule Evaluation** | Retrieve from the knowledge base, check compliance, flag risks — **KB-grounded, no fabrication** | `evaluation.json` |
-| **3 · Configuration + Documentation** | Recommend config (value + basis + confidence), generate the delivery doc & checklist | `proposal.md` |
+| **[1 · Requirement Analysis](agents/01-requirement-analysis.md)** | Parse the site brief, classify station grade (S/A/B/C) | `requirement.json` |
+| **[2 · Retrieval + Rule Evaluation](agents/02-rule-evaluation.md)** | Retrieve from the knowledge base, check compliance, flag risks — **KB-grounded, no fabrication** | `evaluation.json` |
+| **[3 · Configuration + Documentation](agents/03-configuration-doc.md)** | Recommend config (value + basis + confidence), generate the delivery doc & checklist | `proposal.md` |
+
+Each agent's role, prompt, and I/O contract lives in [`agents/`](agents/); the capabilities they invoke are in [`skills/`](skills/).
 
 > Built as a deterministic pipeline rather than free autonomous hand-off — **controllability and evaluability** matter more than autonomy in an enterprise setting, and errors are easy to localize to a single agent.
 
@@ -81,8 +83,8 @@ TC2 is the thesis in one screen: **the AI recognizes an infeasible plan and stop
 
 ## 7. Evaluation
 
-Five dimensions × grounded test cases — full rubric and scores in [`03_Evaluation.md`](03_Evaluation.md).
-Dimensions: Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human-in-the-Loop.
+Verifiable PASS/FAIL assertions (plus qualitative dimensions) — full detail in [`docs/evaluation.md`](docs/evaluation.md).
+Dimensions: Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human review.
 
 ## 8. The RAG Problem I Solved (the most instructive part)
 
@@ -97,29 +99,36 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ## 9. Roadmap
 
 - **This repo — V1 public demo** ✅ Knowledge base + agentic-workflow rule validation + configuration recommendation + human-review handoff
-- **Next (V1.1)** Deterministic rule node — code-enforced PASS/FAIL for hard constraints (LLM only *explains*, never decides) + a real block-on-Critical-FAIL gate
+- **Next (V1.1)** Deterministic rule node — code-enforced PASS/FAIL for hard constraints (LLM only *explains*, never decides) + a block-on-Critical-FAIL gate. Reference implementation ready & tested in [`skills/rule-check.js`](skills/rule-check.js); to be deployed as a Coze Code node.
 - **V2** GIS/CAD ingestion, demand prediction, site simulation
 - **V3** Optimization engine, automated iteration
 
 ## 10. Repository Structure
 
 ```
-├── README.md                     ← this case study
-├── 00_Build_Playbook.md          how it was built on Coze, step by step
-├── 01_Input_Sample.md            test-case inputs
-├── 02_Agent_Prompts.md           the 3 agents' system prompts
-├── 03_Evaluation.md              rubric + real measured results
-├── 04_Demo_Script.md             5-minute demo narration + Q&A
+├── README.md · README.zh-CN.md   ← this case study (EN / 中文)
+├── agents/                       one spec per agent (role · prompt · I/O · skills)
+│   ├── 01-requirement-analysis.md
+│   ├── 02-rule-evaluation.md
+│   └── 03-configuration-doc.md
+├── skills/                       agent capabilities (no hollow entries)
+│   ├── knowledge-retrieval.md    RAG grounding — active
+│   └── rule-check.js             deterministic hard-constraint gate — reference impl → V1.1
 ├── knowledge_base/               KB_01–04 (the RAG source docs)
-├── results/sample-runs.md        real TC1 / TC2 outputs
+├── config/retrieval.yaml         model + retrieval config (single source of truth)
+├── test-cases/inputs.md          test-case inputs
+├── results/                      sample-runs.md + full raw traces (tc1 / tc2)
+├── docs/                         build-playbook · evaluation · demo-script · storyboard
 └── assets/                       architecture diagram (svg / png / pdf, + dark & theme-adaptive)
 ```
 
 ## 11. Reproduce It
 
-Everything needed to rebuild the bot on Coze is here: upload `knowledge_base/` as a knowledge base, create a 3-agent workflow, paste the prompts from `02_Agent_Prompts.md`, wire the knowledge base to Agent 2, and test with `01_Input_Sample.md`. Full walkthrough in [`00_Build_Playbook.md`](00_Build_Playbook.md).
+Everything needed to rebuild the bot on Coze is here: upload `knowledge_base/` as a knowledge base, create the three agents from [`agents/`](agents/), wire the [`knowledge-retrieval`](skills/knowledge-retrieval.md) skill to Agent 2, apply [`config/retrieval.yaml`](config/retrieval.yaml), and test with [`test-cases/inputs.md`](test-cases/inputs.md). Full walkthrough in [`docs/build-playbook.md`](docs/build-playbook.md).
 
 ## 12. Configuration (single source of truth)
+
+Machine-readable: [`config/retrieval.yaml`](config/retrieval.yaml).
 
 | Setting | Value |
 |---|---|

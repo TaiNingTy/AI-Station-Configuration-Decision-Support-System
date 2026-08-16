@@ -48,9 +48,11 @@
 
 | Agent | 职责 | 输出 |
 |---|---|---|
-| **1 · 需求分析** | 解析场地简报，判定站点等级 (S/A/B/C) | `requirement.json` |
-| **2 · 检索 + 规则校验** | 从知识库检索、做合规检查、识别风险 —— **KB grounded、不编造** | `evaluation.json` |
-| **3 · 配置 + 文档** | 推荐配置（参数 + 依据 + 置信度）、生成交付文档与 checklist | `proposal.md` |
+| **[1 · 需求分析](agents/01-requirement-analysis.md)** | 解析场地简报，判定站点等级 (S/A/B/C) | `requirement.json` |
+| **[2 · 检索 + 规则校验](agents/02-rule-evaluation.md)** | 从知识库检索、做合规检查、识别风险 —— **KB grounded、不编造** | `evaluation.json` |
+| **[3 · 配置 + 文档](agents/03-configuration-doc.md)** | 推荐配置（参数 + 依据 + 置信度）、生成交付文档与 checklist | `proposal.md` |
+
+每个 Agent 的角色、提示词、输入输出契约见 [`agents/`](agents/)；它们调用的技能见 [`skills/`](skills/)。
 
 > 采用确定性流水线，而非自由自主交接 —— 企业场景下 **可控性与可评估性** 比自主性更重要，且错误容易定位到具体某个 Agent。
 
@@ -81,8 +83,8 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案就停下，�
 
 ## 7. 评估
 
-五个维度 × grounded 测试案例 —— 完整评分见 [`03_Evaluation.md`](03_Evaluation.md)。
-维度：推荐准确性 · 规则合规 · 风险识别 · 文档质量 · 人工确认。
+可验证 PASS/FAIL 断言（附定性维度）—— 完整内容见 [`docs/evaluation.md`](docs/evaluation.md)。
+维度：推荐准确性 · 规则合规 · 风险识别 · 文档质量 · 人工复核。
 
 ## 8. 我解决的 RAG 问题（最有价值的一段）
 
@@ -97,29 +99,36 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案就停下，�
 ## 9. 路线图
 
 - **本仓库 —— V1 公开 Demo** ✅ 知识库 + agentic workflow 规则校验 + 配置推荐 + 人工复核交接
-- **下一步 (V1.1)** 确定性规则节点 —— 用代码对硬约束强判 PASS/FAIL（LLM 只*解释*、不做决定）+ 真正的 Critical FAIL 阻断门禁
+- **下一步 (V1.1)** 确定性规则节点 —— 用代码对硬约束强判 PASS/FAIL（LLM 只*解释*、不做决定）+ Critical FAIL 阻断门禁。参考实现已就绪并通过测试：[`skills/rule-check.js`](skills/rule-check.js)，待部署为 Coze Code 节点。
 - **V2** GIS/CAD 接入、需求预测、站点仿真
 - **V3** 优化引擎、自动迭代
 
 ## 10. 仓库结构
 
 ```
-├── README.md / README.zh-CN.md   ← 案例研究（英 / 中）
-├── 00_Build_Playbook.md          扣子搭建步骤
-├── 01_Input_Sample.md            测试输入
-├── 02_Agent_Prompts.md           3 个 Agent 的提示词
-├── 03_Evaluation.md              评估表 + 真实实测结果
-├── 04_Demo_Script.md             5 分钟讲稿 + 追问应答
+├── README.md · README.zh-CN.md   ← 案例研究（英 / 中）
+├── agents/                       一个 Agent 一个规格（角色·提示词·输入输出·技能）
+│   ├── 01-requirement-analysis.md
+│   ├── 02-rule-evaluation.md
+│   └── 03-configuration-doc.md
+├── skills/                       Agent 技能（无空壳）
+│   ├── knowledge-retrieval.md    RAG 检索 —— 已启用
+│   └── rule-check.js             确定性硬约束门禁 —— 参考实现 → V1.1
 ├── knowledge_base/               KB_01–04（RAG 源文档）
-├── results/sample-runs.md        TC1 / TC2 真实输出
+├── config/retrieval.yaml         模型 + 检索配置（唯一权威来源）
+├── test-cases/inputs.md          测试输入
+├── results/                      sample-runs.md + 完整原始 trace（tc1 / tc2）
+├── docs/                         build-playbook · evaluation · demo-script · storyboard
 └── assets/                       架构图（svg / png / pdf，含深色 & 自适应版）
 ```
 
 ## 11. 复现
 
-重建这个 bot 所需的一切都在这里：把 `knowledge_base/` 传成知识库、建一个 3-Agent 工作流、粘贴 `02_Agent_Prompts.md` 里的提示词、把知识库接到 Agent 2、用 `01_Input_Sample.md` 测试。完整步骤见 [`00_Build_Playbook.md`](00_Build_Playbook.md)。
+重建这个 bot 所需的一切都在这里：把 `knowledge_base/` 传成知识库、按 [`agents/`](agents/) 建三个 Agent、把 [`knowledge-retrieval`](skills/knowledge-retrieval.md) 技能接到 Agent 2、套用 [`config/retrieval.yaml`](config/retrieval.yaml)、用 [`test-cases/inputs.md`](test-cases/inputs.md) 测试。完整步骤见 [`docs/build-playbook.md`](docs/build-playbook.md)。
 
 ## 12. 配置（唯一权威来源）
+
+机器可读：[`config/retrieval.yaml`](config/retrieval.yaml)。
 
 | 设置 | 值 |
 |---|---|
