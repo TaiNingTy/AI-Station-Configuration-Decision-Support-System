@@ -1,81 +1,127 @@
 // Skill · Deterministic Hard-Constraint Rule Check
 // ---------------------------------------------------------------------------
 // Encodes the non-negotiable engineering / accessibility rules from KB_02 §6.
-// PASS/FAIL is decided HERE by code — the LLM only *explains* the verdict, it
-// never decides it. On any Critical FAIL the workflow is BLOCKED and downstream
-// configuration generation must not run.
+// PASS/FAIL is decided HERE by code — the LLM only *explains* the verdict.
+//
+// Safety-system semantics (a missing input is NOT a pass):
+//   PASS           value present and compliant
+//   FAIL           value present and violates the rule  → BLOCKED
+//   NOT_EVALUATED  value missing                        → NEEDS_REVIEW (never silently passes)
+//   NOT_APPLICABLE rule does not apply to this case     → ignored by the gate
+//
+// Two phases, because the rules bind at different times:
+//   evaluateSiteConstraints(requirement)     — before config (route geometry)
+//   evaluateProposedConfiguration(proposal)  — after config (platform length, gap)
 //
 // Status: reference implementation. Deploys as a Coze Code node in V1.1
 //         (see ../README.md#9-roadmap). Runnable as-is in Node for local testing.
 // ---------------------------------------------------------------------------
 
-const HARD_RULES = [
+const STATUS = {
+  PASS: "PASS",
+  FAIL: "FAIL",
+  NOT_EVALUATED: "NOT_EVALUATED",
+  NOT_APPLICABLE: "NOT_APPLICABLE",
+};
+
+const SITE_RULES = [
   {
     id: "ENG-006",
     name: "Curve radius",
     source: "KB_02",
-    threshold: "curve_radius_m >= 30",
+    field: "curve_radius_m",
+    threshold_value: 30,
     severity: "critical",
     reason: "曲线半径 < 30m，停靠精度不达标，不可实施",
-    check: (p) => p.curve_radius_m == null || p.curve_radius_m >= 30,
+    // Only binds when the platform sits on a curve.
+    applicable: (p) => p.platform_on_curve !== false, // false → N/A; null/true → evaluate
+    compliant: (v) => v >= 30,
   },
+];
+
+const CONFIG_RULES = [
   {
     id: "ENG-002",
     name: "Straight platform length",
     source: "KB_02",
-    threshold: "straight_platform_m >= 8",
+    field: "straight_platform_m",
+    threshold_value: 8,
     severity: "critical",
     reason: "直线站台段 < 8m，无法停靠，方案不成立",
-    check: (p) => p.straight_platform_m == null || p.straight_platform_m >= 8,
+    applicable: () => true,
+    compliant: (v) => v >= 8,
   },
   {
     id: "ACC-001",
     name: "Platform-to-floor height gap",
     source: "KB_02",
-    threshold: "platform_gap_mm <= 20 (or compensation device)",
+    field: "platform_gap_mm",
+    threshold_value: 20,
     severity: "critical",
     reason: "月台与车辆地板高差 > 20mm 且无补偿装置，不满足无障碍，不可交付",
-    check: (p) =>
-      p.platform_gap_mm == null ||
-      p.platform_gap_mm <= 20 ||
-      p.has_gap_compensation === true,
+    applicable: () => true,
+    compliant: (v, p) => v <= 20 || p.has_gap_compensation === true,
   },
 ];
 
-/**
- * @param {object} params  e.g. { curve_radius_m, straight_platform_m, platform_gap_mm, has_gap_compensation }
- * @returns {{ workflow_status, passed, allow_configuration, failures }}
- */
-function evaluate(params = {}) {
-  const failures = HARD_RULES.filter((r) => !r.check(params)).map((r) => ({
-    rule_id: r.id,
-    name: r.name,
-    source: r.source,
-    status: "FAIL",
-    severity: r.severity,
-    threshold: r.threshold,
-    reason: r.reason,
-  }));
+function checkRule(rule, params) {
+  const base = {
+    rule_id: rule.id,
+    name: rule.name,
+    source: rule.source,
+    severity: rule.severity,
+    threshold_value: rule.threshold_value,
+    actual_value: params[rule.field] ?? null,
+  };
 
-  const blocked = failures.some((f) => f.severity === "critical");
+  if (rule.applicable(params) === false) {
+    return { ...base, status: STATUS.NOT_APPLICABLE, reason: "规则不适用于本案例" };
+  }
+  if (params[rule.field] == null) {
+    // Missing input must NOT auto-pass — it needs a human / more data.
+    return { ...base, status: STATUS.NOT_EVALUATED, reason: `缺少字段 ${rule.field}，需补充后校验` };
+  }
+  const ok = rule.compliant(params[rule.field], params);
+  return { ...base, status: ok ? STATUS.PASS : STATUS.FAIL, reason: ok ? "符合" : rule.reason };
+}
 
+function runRules(rules, params) {
+  const results = rules.map((r) => checkRule(r, params));
+  const anyFail = results.some((r) => r.status === STATUS.FAIL);
+  const anyUneval = results.some((r) => r.status === STATUS.NOT_EVALUATED);
+  const workflow_status = anyFail ? "BLOCKED" : anyUneval ? "NEEDS_REVIEW" : "PASS";
   return {
-    workflow_status: blocked ? "BLOCKED" : "PASS",
-    passed: failures.length === 0,
-    // Gate contract: when false, Agent 3 must NOT generate a deliverable config.
-    allow_configuration: !blocked,
-    failures,
+    workflow_status,
+    // Gate contract: config generation may proceed ONLY on a clean PASS.
+    allow_configuration: workflow_status === "PASS",
+    results,
   };
 }
 
-// --- Examples -------------------------------------------------------------
-// TC2 · Central Hub (curve radius 27m):
-//   evaluate({ curve_radius_m: 27 })
-//   → { workflow_status: "BLOCKED", allow_configuration: false,
-//       failures: [{ rule_id: "ENG-006", status: "FAIL", ... }] }
-//
-// TC1 · Greenfield (no hard-constraint params):
-//   evaluate({ straight_platform_m: 18 })
-//   → { workflow_status: "PASS", allow_configuration: true, failures: [] }
+const evaluateSiteConstraints = (requirement = {}) => runRules(SITE_RULES, requirement);
+const evaluateProposedConfiguration = (proposal = {}) => runRules(CONFIG_RULES, proposal);
 
-module.exports = { evaluate, HARD_RULES };
+// --- Examples -------------------------------------------------------------
+// TC2 · Central Hub (on a 27m curve):
+//   evaluateSiteConstraints({ platform_on_curve: true, curve_radius_m: 27 })
+//   → BLOCKED, allow_configuration: false, ENG-006 FAIL (actual 27, threshold 30)
+//
+// Missing radius (unknown geometry):
+//   evaluateSiteConstraints({})
+//   → NEEDS_REVIEW (ENG-006 NOT_EVALUATED) — does NOT pass
+//
+// Straight-line site (rule N/A):
+//   evaluateSiteConstraints({ platform_on_curve: false })
+//   → PASS (ENG-006 NOT_APPLICABLE)
+//
+// TC1 · Greenfield config:
+//   evaluateProposedConfiguration({ straight_platform_m: 18, platform_gap_mm: 15 })
+//   → PASS
+
+module.exports = {
+  STATUS,
+  SITE_RULES,
+  CONFIG_RULES,
+  evaluateSiteConstraints,
+  evaluateProposedConfiguration,
+};

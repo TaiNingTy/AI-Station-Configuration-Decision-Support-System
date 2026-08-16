@@ -4,32 +4,32 @@
 
 ## A. 可验证断言（逐案例判定）
 
-| 断言 | Greenfield (TC1) | Hilltop (TC2) | Central Hub (TC3) |
+| 断言 | Greenfield (TC1) | Central Hub (TC2) | Hilltop (TC3) |
 |---|---|---|---|
-| 输出为合法 JSON（schema 通过） | ✅ | ⬜ 待跑 | ✅ |
-| 站点等级判定正确 | ✅ B | ⬜ | ✅ S |
-| 关键规则命中 | ✅ 容量/排水 | ⬜ | ✅ 曲线半径<30m |
-| 所有引用存在于 KB（可溯源） | ✅ | ⬜ | ✅ |
-| 无外部虚构标准 | ✅ | ⬜ | ✅ |
-| Critical FAIL 后阻断生成 | n/a（无硬约束） | ⬜ | ⚠️ 仅标注、未硬阻断（门禁 = V1.1）|
-| 必备报告章节完整（0–5） | 5 | ⬜ | 5 |
-| 端到端耗时 | ~60s | ⬜ | ~60s |
+| 输出为合法 JSON（schema 通过） | ✅ | ✅ | ⬜ 待跑 |
+| 站点等级判定正确 | ✅ B | ✅ S | ⬜ |
+| 关键规则命中 | ✅ 分级/容量 | ✅ 曲线半径<30m | ⬜ |
+| 所有引用存在于 KB（可溯源） | ✅ | ✅ | ⬜ |
+| 无外部虚构标准 | ✅ | ✅ | ⬜ |
+| Critical FAIL 后阻断生成 | n/a（无硬约束） | ⚠️ 仅标注、未硬阻断（门禁 = V1.1）| ⬜ |
+| 必备报告章节完整（0–5） | 5 | **N/A（Agent 3 待重跑）** | ⬜ |
+| 端到端耗时 | ~60s | ~45s（仅 A1+A2）| ⬜ |
 
-> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Hilltop **尚未运行**；"Critical FAIL 阻断"目前仅为文档标注、未真正硬阻断，确定性门禁列入 V1.1。
+> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Central Hub 已验证 **Agent 1+2**，**Agent 3 待重跑**（故 Document Quality 记 N/A）；TC3 Hilltop **尚未运行**；"Critical FAIL 阻断"目前仅为文档标注、未真正硬阻断，确定性门禁列入 V1.1。
 
 ## B. 定性维度（辅助，1–5）
 
-Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human-review handoff。Central Hub 五项全部达标；Greenfield 重跑后补填。
+Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human-review handoff。Greenfield 五维达标；Central Hub 除 Document Quality（Agent 3 待跑）外达标。
 
 ---
 
 ## 实测记录（2026-08-15，扣子 agentic workflow + 豆包 2.0 pro）
 
-**Central Hub (TC3) — 已验证 ⭐**：正确判 S 级；引用 KB_02"曲线半径<30m 不可实施"精准命中；识别 27m<30m、severity 高、判"项目无法实施"、给正解"调整线位至 ≥30m"；检索到相似先例 28m→35m；交付文档标"需人工决策"。（当前为标注式交还，硬阻断门禁列入 V1.1。）
+**Central Hub (TC2) — Agent 1+2 已验证 ⭐**：正确判 S 级；引用 KB_02"曲线半径<30m 不可实施"精准命中；识别 27m<30m、severity 高、判"项目无法实施"、给正解"调整线位至 ≥30m"；检索到相似先例 28m→35m。**Agent 3 待重跑**：部署确定性门禁后，Critical FAIL 应真正阻断配置生成（门禁 = V1.1）。
 
-**Greenfield (TC1) — 已验证（KB v1.1，2026-08-16）**：正确判 B 级、无误升级；用地可布 2 车位侧式站台、容量达标；标出低洼排水与 300m 供电风险；交付文档含 KB 引用 + 置信度 + 分阶段 Checklist。KB_04 案例检索本轮为空（检索覆盖波动，列入 future work）。
+**Greenfield (TC1) — 已验证（KB v1.1，2026-08-16）**：正确判 B 级、无误升级；用地可布 2 车位侧式站台、容量达标；标出低洼排水与 300m 供电风险；交付文档含依据 + 置信度 + 分阶段 Checklist（配置层数值为设计建议、非 KB 规则，见 raw 说明）。KB_04 案例检索本轮为空（检索覆盖波动，列入 future work）。
 
-**Hilltop (TC2) — 待运行**：末端 C 级、无市电供电风险场景，尚未纳入实测。
+**Hilltop (TC3) — 待运行**：末端 C 级、无市电供电风险场景，尚未纳入实测。
 
 ### 关键工程发现（面试可讲的"踩坑与解决"）
 > **问题**：初版 Agent② 无视知识库，编造真实感国标(GB/T、CJJ)和虚构案例 —— 典型的 RAG 幻觉。

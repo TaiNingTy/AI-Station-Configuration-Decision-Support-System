@@ -24,6 +24,15 @@ A Markdown delivery document:
 若有硬约束不满足，在文档顶部醒目标注「需人工决策」。
 ```
 
+## Grounding boundary (important)
+Agent 3 is the **generation** layer, not the grounding layer (that's Agent 2). Its config values fall into three kinds,
+and V1.1 tags each row accordingly:
+- **Rule-derived** — traceable to a KB rule (cite `KB_0x`).
+- **Design-assumption** — a reasonable engineering default (e.g. cable gauge, platform length beyond the minimum, cost estimates) → **requires engineering calculation**, surfaced for human confirmation, *not* presented as a KB fact.
+- **Human-required** — no basis available → `知识库未覆盖`, routed to a human.
+
+The `confidence` column is a **self-reported evidence level (High/Medium/Low), not a calibrated probability** — a model-reported "100%" is not a real probability and should be read as "High evidence."
+
 ## Gate contract (V1.1)
 If the `rule-check` skill returns `workflow_status: "BLOCKED"` (any Critical FAIL), this agent
 **must not** generate a deliverable configuration — it outputs risks + remediation only, headed

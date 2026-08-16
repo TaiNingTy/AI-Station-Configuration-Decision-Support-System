@@ -79,7 +79,7 @@ Full outputs in [`results/sample-runs.md`](results/sample-runs.md).
 | **TC1 · Greenfield** (compliant) | 500 pax/h, low-lying, B-grade | **Grounded validation + risk surfacing:** confirms B-grade holds (500 in the 200–600 band; site fits a 2-space side platform), flags the low-lying **drainage** and 300m **power** risks, and produces a full delivery doc with KB-cited config + confidence scores — every citation traceable to KB_01/KB_02, nothing fabricated. |
 | **TC2 · Central Hub** (hard) ⭐ | 1,800 pax/h, platform on a 27m-radius curve | **Hard-constraint catch:** radius 27m < 30m → *"not implementable."* Severity high, correct fix ("re-align to ≥30m"), and it surfaced a 28m→35m precedent — then **deferred to a human.** |
 
-TC2 is the thesis in one screen: **the AI recognizes an infeasible plan and stops, instead of confidently hallucinating a solution.**
+TC2 is the thesis in one screen: **the AI flags an infeasible plan and defers it to human review, instead of confidently hallucinating a solution.** (A code-enforced hard *block* on Critical FAIL is the V1.1 gate — see [Roadmap](#9-roadmap).)
 
 ## 7. Evaluation
 
@@ -118,6 +118,7 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ├── config/retrieval.yaml         model + retrieval config (single source of truth)
 ├── test-cases/inputs.md          test-case inputs
 ├── results/                      sample-runs.md + full raw traces (tc1 / tc2)
+├── demo/                         run evidence (screenshots + video link) — capture in progress
 ├── docs/                         build-playbook · evaluation · demo-script · storyboard
 └── assets/                       architecture diagram (svg / png / pdf, + dark & theme-adaptive)
 ```

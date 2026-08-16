@@ -13,3 +13,8 @@ or working reference code slated for deployment.
 > in V1.1, a Code node. `knowledge-retrieval` is live; `rule-check` is real, runnable code that will be
 > pasted into a Coze Code node so hard constraints are decided by code, not by the LLM. See the
 > [Roadmap](../README.md#9-roadmap).
+>
+> `rule-check` uses **safety-system semantics**: a missing input is **not** a pass
+> (`NOT_EVALUATED` → `NEEDS_REVIEW`), site-geometry vs post-config rules run in separate phases
+> (`evaluateSiteConstraints` / `evaluateProposedConfiguration`), and each result carries
+> `actual_value` + `threshold_value`.

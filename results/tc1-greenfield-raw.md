@@ -51,6 +51,13 @@ Result: **compliant B-grade** station — no false upgrade, KB-grounded, honest 
 
 ## Agent 3 — Configuration + Documentation (delivery doc)
 
+> **How to read this output — grounding boundary.** Agent 3 is the *generation* layer, not the grounding layer.
+> Rows whose basis cites `KB_0x` are rule-derived. Other numeric values below — cable gauge (16mm²), drain size (10cm),
+> solar (1kW), cost-saving % (30/40/60), voltage drop ≤5%, and platform length beyond the ≥8m minimum — are
+> **illustrative design assumptions that require engineering calculation**, not KB-grounded facts, and are flagged
+> for human confirmation in §3. The `置信度 %` column is the model's **self-reported evidence level, not a calibrated
+> probability**. (V1.1 will tag each config row `Rule-derived | Design-assumption | Human-required`.)
+
 # Greenfield Line 二期新增站点配置交付文档
 文档生成时间：2026/08/16
 
