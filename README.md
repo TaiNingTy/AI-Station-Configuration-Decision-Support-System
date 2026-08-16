@@ -1,5 +1,7 @@
 # AI Station Configuration & Decision Support System
 
+**English** | [中文](README.zh-CN.md)
+
 > Turning fragmented transit-planning expertise into a **grounded, auditable, human-gated AI workflow** — a multi-agent system that configures autonomous-transit stations and knows when to defer to a human.
 
 **Role:** AI Product Manager (end-to-end: problem → agent design → knowledge engineering → evaluation)
