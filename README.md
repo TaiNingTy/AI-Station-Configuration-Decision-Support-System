@@ -85,6 +85,8 @@ TC2 is the thesis in one screen: **the AI flags an infeasible plan and defers it
 
 Verifiable PASS/FAIL assertions (plus qualitative dimensions) — full detail in [`docs/evaluation.md`](docs/evaluation.md).
 Dimensions: Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human review.
+The deterministic gate has a **runnable** suite: `node evals/run.js` → 9/9 ([`evals/`](evals/)).
+The reasoning behind each design choice is logged in [`docs/product-decisions.md`](docs/product-decisions.md).
 
 ## 8. The RAG Problem I Solved (the most instructive part)
 
@@ -118,9 +120,11 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ├── knowledge_base/               KB_01–04 (the RAG source docs)
 ├── config/retrieval.yaml         model + retrieval config (single source of truth)
 ├── test-cases/inputs.md          test-case inputs
+├── evals/                        runnable gate eval — `node evals/run.js` (9/9)
 ├── results/                      sample-runs.md + full raw traces (tc1 / tc2)
 ├── demo/                         run evidence (screenshots + video link) — capture in progress
-├── docs/                         build-playbook · evaluation · demo-script · storyboard
+├── docs/                         build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
+├── AGENTS.md · CLAUDE.md         repo guide + review standard (for AI reviewers)
 └── assets/                       architecture diagram (svg / png / pdf, + dark & theme-adaptive)
 ```
 

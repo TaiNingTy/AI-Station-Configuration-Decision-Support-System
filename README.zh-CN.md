@@ -85,6 +85,8 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 
 可验证 PASS/FAIL 断言（附定性维度）—— 完整内容见 [`docs/evaluation.md`](docs/evaluation.md)。
 维度：推荐准确性 · 规则合规 · 风险识别 · 文档质量 · 人工复核。
+确定性门禁有**可运行**评估：`node evals/run.js` → 9/9（[`evals/`](evals/)）。
+每个设计选择背后的思考记录在 [`docs/product-decisions.md`](docs/product-decisions.md)。
 
 ## 8. 我解决的 RAG 问题（最有价值的一段）
 
@@ -118,9 +120,11 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 ├── knowledge_base/               KB_01–04（RAG 源文档）
 ├── config/retrieval.yaml         模型 + 检索配置（唯一权威来源）
 ├── test-cases/inputs.md          测试输入
+├── evals/                        可运行门禁评估 —— `node evals/run.js`（9/9）
 ├── results/                      sample-runs.md + 完整原始 trace（tc1 / tc2）
 ├── demo/                         运行证据（截图 + 视频链接）—— 补充中
-├── docs/                         build-playbook · evaluation · demo-script · storyboard
+├── docs/                         build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
+├── AGENTS.md · CLAUDE.md         仓库指南 + 审查标准（给 AI 审查者）
 └── assets/                       架构图（svg / png / pdf，含深色 & 自适应版）
 ```
 

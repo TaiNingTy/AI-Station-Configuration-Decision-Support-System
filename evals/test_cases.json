@@ -1,0 +1,34 @@
+{
+  "description": "Deterministic gate test cases (run against skills/rule-check.js via evals/run.js). Covers the two rule phases: site-geometry pre-check and post-config check.",
+  "site_constraints": [
+    { "id": "G-001", "category": "hard-constraint", "note": "TC2 Central Hub — radius below limit",
+      "input": { "curve_radius_m": 27, "platform_on_curve": true },
+      "expect": { "workflow_status": "BLOCKED", "allow_configuration": false } },
+    { "id": "G-002", "category": "pass", "note": "radius above limit",
+      "input": { "curve_radius_m": 35, "platform_on_curve": true },
+      "expect": { "workflow_status": "PASS", "allow_configuration": true } },
+    { "id": "G-003", "category": "boundary", "note": "exactly at the 30m threshold",
+      "input": { "curve_radius_m": 30, "platform_on_curve": true },
+      "expect": { "workflow_status": "PASS", "allow_configuration": true } },
+    { "id": "G-004", "category": "not-applicable", "note": "straight-line platform — rule does not apply",
+      "input": { "platform_on_curve": false },
+      "expect": { "workflow_status": "PASS", "allow_configuration": true } },
+    { "id": "G-005", "category": "missing-data", "note": "unknown geometry must NOT auto-pass",
+      "input": {},
+      "expect": { "workflow_status": "NEEDS_REVIEW", "allow_configuration": false } }
+  ],
+  "config_constraints": [
+    { "id": "C-001", "category": "hard-constraint", "note": "platform too short to dock",
+      "input": { "straight_platform_m": 7 },
+      "expect": { "workflow_status": "BLOCKED", "allow_configuration": false } },
+    { "id": "C-002", "category": "pass", "note": "TC1 Greenfield — valid config",
+      "input": { "straight_platform_m": 18, "platform_gap_mm": 15 },
+      "expect": { "workflow_status": "PASS", "allow_configuration": true } },
+    { "id": "C-003", "category": "accessibility-fail", "note": "gap too large, no compensation",
+      "input": { "straight_platform_m": 18, "platform_gap_mm": 35 },
+      "expect": { "workflow_status": "BLOCKED", "allow_configuration": false } },
+    { "id": "C-004", "category": "accessibility-compensation", "note": "large gap but compensation device present",
+      "input": { "straight_platform_m": 18, "platform_gap_mm": 35, "has_gap_compensation": true },
+      "expect": { "workflow_status": "PASS", "allow_configuration": true } }
+  ]
+}
