@@ -11,11 +11,11 @@
 | 关键规则命中 | ✅ 分级/容量 | ✅ 曲线半径<30m | ⬜ |
 | 所有引用存在于 KB（可溯源） | ✅ | ✅ | ⬜ |
 | 无外部虚构标准 | ✅ | ✅ | ⬜ |
-| Critical FAIL 后阻断生成 | n/a（无硬约束） | ⚠️ 仅标注、未硬阻断（门禁 = V1.1）| ⬜ |
+| Critical FAIL 后阻断生成 | n/a（无硬约束） | ✅ 门禁工作流已验证（27→BLOCKED / 35→PASS）；接入主管线 = Phase B | ⬜ |
 | 必备报告章节完整（0–5） | 5 | **N/A（Agent 3 待重跑）** | ⬜ |
 | 端到端耗时 | ~60s | ~45s（仅 A1+A2）| ⬜ |
 
-> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Central Hub 已验证 **Agent 1+2**，**Agent 3 待重跑**（故 Document Quality 记 N/A）；TC3 Hilltop **尚未运行**；"Critical FAIL 阻断"目前仅为文档标注、未真正硬阻断，确定性门禁列入 V1.1。
+> **状态诚实说明**：TC1 已在 KB v1.1 下**重跑验证**（2026-08-16）；TC2 Central Hub 已验证 **Agent 1+2**，**Agent 3 待重跑**（故 Document Quality 记 N/A）；TC3 Hilltop **尚未运行**；确定性门禁已作为独立 Coze 工作流**部署并验证**（27→BLOCKED / 35→PASS，Phase A），接入主管线为 Phase B。
 
 ## B. 定性维度（辅助，1–5）
 

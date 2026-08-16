@@ -68,7 +68,7 @@ Agent 2 的检索为**每轮自动调用**、混合搜索、低匹配阈值、�
 
 三件事永远交还给人：**最终配置、工程可实施性、商业/预算决策。** 流水线会在交付文档顶部显式标出这些（标注"需人工决策"），而不是替人做决定。
 
-> **诚实状态 (V1)：** 目前这是一个 *人工复核交接* —— 系统会标出需要签批的项，但尚未**硬阻断**下游生成。一个确定性门禁（任一 Critical FAIL 就阻断配置生成）是下一步 —— 见[路线图](#9-路线图)。
+> **状态 (V1.1，Phase A — 已验证)：** 确定性规则门禁已作为一个 Coze 工作流部署 —— Code 节点硬判 PASS/FAIL，条件分支把 Critical FAIL 路由离开配置路径（已验证：曲线半径 27m → `BLOCKED`、35m → `PASS`、直线段 → `PASS`）。把它接到配置生成 Agent 前面（让 BLOCKED 永远到不了 Agent 3）是 Phase B。见 [`docs/v1.1-rule-gate-plan.md`](docs/v1.1-rule-gate-plan.md)。
 
 ## 6. Demo —— 两个测试案例
 
@@ -99,7 +99,8 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 ## 9. 路线图
 
 - **本仓库 —— V1 公开 Demo** ✅ 知识库 + agentic workflow 规则校验 + 配置推荐 + 人工复核交接
-- **下一步 (V1.1)** 确定性规则节点 —— 用代码对硬约束强判 PASS/FAIL（LLM 只*解释*、不做决定）+ Critical FAIL 阻断门禁。参考实现已就绪并通过测试：[`skills/rule-check.js`](skills/rule-check.js)，待部署为 Coze Code 节点。
+- **V1.1 · Phase A（已完成）** 确定性规则门禁已作为 Coze 工作流部署 —— Code 节点硬判 PASS/FAIL，条件分支阻断 Critical FAIL（已验证 27m→`BLOCKED` / 35m→`PASS`）。代码：[`skills/rule-check.js`](skills/rule-check.js)。
+- **V1.1 · Phase B（下一步）** 把门禁接到配置生成 Agent 前面，让 BLOCKED 案例永远到不了 Agent 3。
 - **V2** GIS/CAD 接入、需求预测、站点仿真
 - **V3** 优化引擎、自动迭代
 

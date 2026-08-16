@@ -68,7 +68,7 @@ Agent 2's retrieval is **auto-called** on every turn, hybrid search, low match t
 
 Three things are always routed back to a human: **final configuration, engineering feasibility, business/budget decisions.** The pipeline surfaces these explicitly at the top of the delivery doc (marked *"requires human decision"*) rather than deciding them.
 
-> **Honest status (V1):** today this is a *human-review handoff* — the system flags what needs sign-off but does not yet hard-block downstream generation. A deterministic gate (block configuration generation on any Critical FAIL) is the next build step — see [Roadmap](#9-roadmap).
+> **Status (V1.1, Phase A — verified):** a deterministic rule gate is now deployed as a Coze workflow — a code node decides PASS/FAIL and a conditional branch routes Critical FAILs away from the config path (verified: curve radius 27m → `BLOCKED`, 35m → `PASS`, straight-line → `PASS`). Wiring it in front of the config-generation agents — so a BLOCKED case never reaches Agent 3 — is Phase B. See [`docs/v1.1-rule-gate-plan.md`](docs/v1.1-rule-gate-plan.md).
 
 ## 6. Demo — Two Test Cases
 
@@ -99,7 +99,8 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ## 9. Roadmap
 
 - **This repo — V1 public demo** ✅ Knowledge base + agentic-workflow rule validation + configuration recommendation + human-review handoff
-- **Next (V1.1)** Deterministic rule node — code-enforced PASS/FAIL for hard constraints (LLM only *explains*, never decides) + a block-on-Critical-FAIL gate. Reference implementation ready & tested in [`skills/rule-check.js`](skills/rule-check.js); to be deployed as a Coze Code node.
+- **V1.1 · Phase A (done)** Deterministic rule gate deployed as a Coze workflow — code node decides PASS/FAIL, conditional branch blocks Critical FAILs (verified 27m→`BLOCKED` / 35m→`PASS`). Code: [`skills/rule-check.js`](skills/rule-check.js).
+- **V1.1 · Phase B (next)** Wire the gate in front of the config-generation agents so a BLOCKED case never reaches Agent 3.
 - **V2** GIS/CAD ingestion, demand prediction, site simulation
 - **V3** Optimization engine, automated iteration
 

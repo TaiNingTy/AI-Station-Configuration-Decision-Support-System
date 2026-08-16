@@ -8,6 +8,8 @@ evidence to add; ⬜ items are pending.
 | `workflow-overview.png` | Coze canvas — the 3 agents + knowledge base wired together | ⬜ |
 | `tc1-result.png` | TC1 Greenfield — compliant B-grade output | ⬜ |
 | `tc2-hard-constraint.png` | TC2 Central Hub — "not implementable" (27m < 30m) | ⬜ |
+| `gate-blocked-27.png` | Rule gate — `curve_radius_m=27` → `BLOCKED` (deterministic) | ⬜ |
+| `gate-pass-35.png` | Rule gate — `curve_radius_m=35` → `PASS` | ⬜ |
 | **Demo video** | 2–3 min screen recording — paste link below | ⬜ |
 
 **Demo video link:** _pending — paste here once recorded (Loom / YouTube-unlisted / portfolio page)._
