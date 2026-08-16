@@ -65,7 +65,7 @@
 - 选择 `Station-Knowledge-Base`。
 - 检索 query：引用节点1的 `requirement_json`（或直接引用 `site_info`）。
 - 输出：`kb_chunks`（召回的知识片段）。
-- 召回数量：Top 5。
+- 检索设置（与 README 配置表一致）：调用方式 **自动调用**、搜索策略 **混合**、**最大召回 10**、**最小匹配度 0.15**、结果重排 **开**。
 
 **④ LLM 节点2 —— Rule Evaluation**
 - 输入：`requirement_json` + `kb_chunks`

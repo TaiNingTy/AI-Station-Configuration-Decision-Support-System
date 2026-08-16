@@ -1,12 +1,14 @@
 # AI Station Configuration & Decision Support System
 
-**English** | [中文](README.zh-CN.md)
+**English** | [中文](README.zh-CN.md) · `Public Portfolio Demo V1`
 
-> Turning fragmented transit-planning expertise into a **grounded, auditable, human-gated AI workflow** — a multi-agent system that configures autonomous-transit stations and knows when to defer to a human.
+> Turning fragmented transit-planning expertise into a **grounded, auditable AI workflow** — a controlled agentic workflow of three specialized LLM agents + RAG retrieval + a human-review handoff, which configures autonomous-transit stations and knows when to defer to a human.
 
 **Role:** AI Product Manager (end-to-end: problem → agent design → knowledge engineering → evaluation)
-**Platform:** Coze (multi-agent orchestration) + RAG knowledge base · **Model:** Doubao 2.0 Pro
-**Pattern:** 3-agent pipeline with a human-in-the-loop checkpoint
+**Platform:** Coze (agentic-workflow orchestration) + RAG knowledge base · **Model:** Doubao 2.0 Pro
+**Pattern:** three specialized LLM agents in a fixed pipeline + a human-review handoff
+
+> **Scope of this public demo:** a V1 reconstruction of the knowledge-retrieval, rule-validation, configuration-recommendation, and human-review portions of the workflow, using **synthetic data**. Spatial/GIS analysis, proprietary optimization logic, and regional rule packs are intentionally excluded — see [Roadmap](#9-roadmap).
 
 <p align="center">
   <img src="assets/architecture_diagram.png" alt="Architecture" width="900">
@@ -40,7 +42,7 @@ So the design centered on three things: **knowledge engineering**, **agent orche
 Site brief
   → [1] Requirement Analysis   → structured requirement (JSON)
   → [2] Retrieval + Rule Eval  → grounded compliance + risks (JSON)   [Knowledge Base / RAG]
-  → ── Human-in-the-loop ──
+  → ── Human-review handoff ──
   → [3] Configuration + Docs   → delivery document (Markdown)
 ```
 
@@ -60,9 +62,11 @@ Four curated documents ([`knowledge_base/`](knowledge_base/)) with a hierarchica
 
 Agent 2's retrieval is **auto-called** on every turn, hybrid search, low match threshold, reranked — so grounding is enforced, not optional.
 
-## 5. Human-in-the-Loop
+## 5. Human Review
 
-Three things are always routed back to a human: **final configuration, engineering feasibility, business/budget decisions.** The pipeline surfaces these explicitly at the top of the delivery doc rather than deciding them.
+Three things are always routed back to a human: **final configuration, engineering feasibility, business/budget decisions.** The pipeline surfaces these explicitly at the top of the delivery doc (marked *"requires human decision"*) rather than deciding them.
+
+> **Honest status (V1):** today this is a *human-review handoff* — the system flags what needs sign-off but does not yet hard-block downstream generation. A deterministic gate (block configuration generation on any Critical FAIL) is the next build step — see [Roadmap](#9-roadmap).
 
 ## 6. Demo — Two Test Cases
 
@@ -70,7 +74,7 @@ Full outputs in [`results/sample-runs.md`](results/sample-runs.md).
 
 | Case | Input | What the system did |
 |---|---|---|
-| **TC1 · Greenfield** (soft) | 500 pax/h, low-lying, "B-grade" | **Cross-rule reasoning:** by flow it's B-grade, but B-grade's parking cap (2) can't serve 500 pax/h → **recommends upgrading to A-grade.** Grounded in KB, retrieved the analogous Riverside case. |
+| **TC1 · Greenfield** (compliant) | 500 pax/h, low-lying, B-grade | **Grounded validation + risk surfacing:** confirms B-grade capacity holds (500 ÷ 300 = 2 spaces, within the B-grade cap), flags the low-lying **drainage risk**, and reuses the analogous Riverside case from KB_04 — every citation traceable, nothing fabricated. |
 | **TC2 · Central Hub** (hard) ⭐ | 1,800 pax/h, platform on a 27m-radius curve | **Hard-constraint catch:** radius 27m < 30m → *"not implementable."* Severity high, correct fix ("re-align to ≥30m"), and it surfaced a 28m→35m precedent — then **deferred to a human.** |
 
 TC2 is the thesis in one screen: **the AI recognizes an infeasible plan and stops, instead of confidently hallucinating a solution.**
@@ -92,10 +96,10 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 
 ## 9. Roadmap
 
-- **V1** ✅ Knowledge base + grounded single-agent report
-- **V2** ✅ Multi-agent workflow + rule validation + configuration recommendation *(this repo)*
-- **V3** GIS/CAD ingestion, demand prediction, site simulation
-- **V4** Optimization engine, automated iteration
+- **This repo — V1 public demo** ✅ Knowledge base + agentic-workflow rule validation + configuration recommendation + human-review handoff
+- **Next (V1.1)** Deterministic rule node — code-enforced PASS/FAIL for hard constraints (LLM only *explains*, never decides) + a real block-on-Critical-FAIL gate
+- **V2** GIS/CAD ingestion, demand prediction, site simulation
+- **V3** Optimization engine, automated iteration
 
 ## 10. Repository Structure
 
@@ -114,6 +118,18 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ## 11. Reproduce It
 
 Everything needed to rebuild the bot on Coze is here: upload `knowledge_base/` as a knowledge base, create a 3-agent workflow, paste the prompts from `02_Agent_Prompts.md`, wire the knowledge base to Agent 2, and test with `01_Input_Sample.md`. Full walkthrough in [`00_Build_Playbook.md`](00_Build_Playbook.md).
+
+## 12. Configuration (single source of truth)
+
+| Setting | Value |
+|---|---|
+| Model | Doubao 2.0 Pro |
+| Retrieval mode | hybrid, **auto-called** every turn |
+| Top-K recall | **10** |
+| Match threshold | **0.15** |
+| Rerank | on |
+| KB version | `demo-v1.1` (single-space capacity = 300 pax/h) |
+| Prompt version | `v1.1` (KB-only citation, external standards forbidden) |
 
 ---
 

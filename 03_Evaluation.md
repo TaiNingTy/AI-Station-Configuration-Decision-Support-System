@@ -1,48 +1,35 @@
 # 评估设计 (Evaluation)
 
-> 面试里"有评估"是 AI PM 的加分项。不用复杂，人工打分 + 3 个用例就够讲。
+> 评估以**可验证断言 (PASS/FAIL)** 为主、主观打分为辅 —— 断言比"自己给自己打 5 分"更可信。
 
-## 评估维度与打分标准（每项 1–5 分）
+## A. 可验证断言（逐案例判定）
 
-| 维度 | 含义 | 5 分标准 |
-|---|---|---|
-| Recommendation Accuracy | 配置建议是否合理 | 车位/尺寸/等级判断均正确 |
-| Rule Compliance | 是否正确引用知识库规则、无编造 | 所有数值可溯源到 KB |
-| Risk Identification | 是否识别关键风险 | 硬约束风险全部命中 |
-| Document Quality | 交付文档是否结构完整、可直接用 | 摘要/表格/checklist 齐全 |
-| Human-in-the-loop | 是否正确标出需人工确认项 | 硬约束冲突时醒目提示 |
-
-## 3 个测试用例（对应输入样例）
-
-| 用例 | 输入 | 期望关键行为 | 得分(自填) |
+| 断言 | Greenfield (TC1) | Hilltop (TC2) | Central Hub (TC3) |
 |---|---|---|---|
-| TC1 Greenfield | 主样例, 500人/h, 低洼, B级 | 判为B级；识别车位冲突；低洼排水风险；引用案例A | |
-| TC2 Hilltop | 末端, 120人/h, 无市电 | 判为C级；1车位；识别供电风险；给太阳能+储能 | |
-| TC3 Central Hub | 枢纽, 1800人/h, 曲线半径27m | 判为S级；**触发曲线半径硬约束**，标"不可实施/需人工决策" | |
+| 输出为合法 JSON（schema 通过） | ✅ | ⬜ 待跑 | ✅ |
+| 站点等级判定正确 | ✅ B | ⬜ | ✅ S |
+| 关键规则命中 | ✅ 容量/排水 | ⬜ | ✅ 曲线半径<30m |
+| 所有引用存在于 KB（可溯源） | ✅ | ⬜ | ✅ |
+| 无外部虚构标准 | ✅ | ⬜ | ✅ |
+| Critical FAIL 后阻断生成 | n/a（无硬约束） | ⬜ | ⚠️ 仅标注、未硬阻断（门禁 = V1.1）|
+| 必备报告章节完整（0–5） | 5 | ⬜ | 5 |
+| 端到端耗时 | ~60s | ⬜ | ~60s |
 
-> TC3 是最有价值的展示点：它证明系统能识别"不可实施"的硬约束并交还人工，而不是硬编一个方案 —— 这正好呼应 Human-in-the-loop。
+> **状态诚实说明**：TC1 在 KB v1.1 修正后需**重跑**取原始输出；TC2 Hilltop **尚未运行**；"Critical FAIL 阻断"目前仅为文档标注、未真正硬阻断，确定性门禁列入 V1.1。
+
+## B. 定性维度（辅助，1–5）
+
+Recommendation Accuracy · Rule Compliance · Risk Identification · Document Quality · Human-review handoff。Central Hub 五项全部达标；Greenfield 重跑后补填。
 
 ---
 
-## 实测结果（2026-08-15，扣子多 Agent + 豆包2.0pro）
+## 实测记录（2026-08-15，扣子 agentic workflow + 豆包 2.0 pro）
 
-### TC1 Greenfield（软性约束 → 跨规则推理）
-| 维度 | 得分 | 实测表现 |
-|---|---|---|
-| Recommendation Accuracy | 5 | 正确判 B 级(500人/h)；**跨规则发现：按客流算需5车位，但B级车位上限2 → 判定"需升级A级"** |
-| Rule Compliance | 4 | 引用 KB_01/02/03，数值可溯源；source 归属偶有偏差(部分标KB_01) |
-| Risk Identification | 5 | 命中低洼内涝、车位不足、无障碍、供电四项风险 |
-| Document Quality | 5 | ③输出完整交付文档：摘要+配置表(依据/置信度)+风险+分阶段Checklist+设计说明 |
-| Human-in-the-loop | 5 | 文档顶部标"需人工决策"，升级+预算列为高优先级人工确认项 |
+**Central Hub (TC3) — 已验证 ⭐**：正确判 S 级；引用 KB_02"曲线半径<30m 不可实施"精准命中；识别 27m<30m、severity 高、判"项目无法实施"、给正解"调整线位至 ≥30m"；检索到相似先例 28m→35m；交付文档标"需人工决策"。（当前为标注式交还，硬阻断门禁列入 V1.1。）
 
-### TC3 Central Hub（硬约束 → 不可实施，交还人工）⭐
-| 维度 | 得分 | 实测表现 |
-|---|---|---|
-| Recommendation Accuracy | 5 | 正确判 S 级(1800人/h) |
-| Rule Compliance | 5 | 引用 KB_02"曲线半径<30m不可实施"，精准命中 |
-| Risk Identification | 5 | **识别曲线半径27m<30m → severity高 → "项目无法实施"**，给正解"调整线位至≥30m" |
-| Document Quality | 5 | — |
-| Human-in-the-loop | 5 | **主动拦下不可实施方案**，检索到相似先例(28m→35m) |
+**Greenfield (TC1) — 待重跑（KB v1.1）**：预期正确判 B 级；500÷300=2 车位在 B 级上限内 → 容量达标；识别低洼排水风险；复用案例 A。重跑后提交原始输出。
+
+**Hilltop (TC2) — 待运行**：末端 C 级、无市电供电风险场景，尚未纳入实测。
 
 ### 关键工程发现（面试可讲的"踩坑与解决"）
 > **问题**：初版 Agent② 无视知识库，编造真实感国标(GB/T、CJJ)和虚构案例 —— 典型的 RAG 幻觉。

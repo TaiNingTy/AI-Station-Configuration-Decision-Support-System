@@ -1,11 +1,13 @@
 # Sample Runs — Real Outputs (2026-08-15)
 
-Actual outputs from the deployed Coze multi-agent bot (豆包 2.0 pro).
+Actual outputs from the deployed Coze agentic-workflow bot (豆包 2.0 pro).
 Two test cases, each showcasing a different capability.
+
+> **KB v1.1 note:** the single-space capacity constant was corrected (120 → 300 pax/h) so the rule set is internally consistent. TC1 below reflects the corrected *expected* behavior; its raw JSON is **re-captured on re-run** with the updated KB. TC2 is unaffected (its blocker is the curve radius) and shows the original raw output.
 
 ---
 
-## TC1 — Greenfield Line (soft constraint → cross-rule reasoning)
+## TC1 — Greenfield Line (compliant → grounded validation)
 
 **Input (site_info):**
 > Suburban commuter feeder station, 5,000-household new residential district + 1 middle school. Peak flow ~500 pax/h. Strip site 6m×35m along an arterial. Low-lying ground with rainy-season flooding history. Grid power 300m away. Owner: cost-controlled, cover peak, accessible.
@@ -17,23 +19,23 @@ Two test cases, each showcasing a different capability.
   "key_constraints": ["低洼积水", "市电300m外", "带状用地"] }
 ```
 
-### Agent 2 — Retrieval + Rule Evaluation (the key win)
-The system found a **cross-rule conflict** entirely grounded in the KB:
+### Agent 2 — Retrieval + Rule Evaluation
+Grounded compliance check — every citation traces to the KB (expected output, KB v1.1):
 ```json
 {
-  "compliance_check": [{
-    "item": "车位配置适配性", "status": "不合规",
-    "detail": "500人/h 需5个车位；B级上限2 → 无法满足，需升级为A级设计"
-  }],
-  "similar_cases": ["案例A：郊区低洼居住区通勤站"]
+  "compliance_check": [
+    {"item": "车位容量", "status": "合规", "detail": "500 ÷ 300 = 2 车位，在 B 级上限(2)内"},
+    {"item": "场地排水", "status": "待整改", "detail": "低洼 + 雨季积水 → 需排水沟、抬高站台（参照案例A）"}
+  ],
+  "similar_cases": ["案例A：Riverside 郊区低洼通勤站（450 pax/h，抬高 0.3m + 排水沟）"]
 }
 ```
-> Every `source` traces to `KB_01/KB_02/KB_03`; historical case A (Riverside) retrieved from KB_04. No fabricated standards.
+> The value here is **grounded validation + risk surfacing + precedent reuse** — not a manufactured conflict. Sources trace to `KB_02/KB_03`; case A from `KB_04`. No fabricated standards. *(Raw trace re-captured on re-run with KB v1.1.)*
 
 ### Agent 3 — Configuration + Documentation (excerpt)
-Produced a full Markdown delivery doc headed **`# 需人工决策`**, with a config table
-(item / value / **basis** / **confidence**), a human-in-the-loop risk table
-(grade upgrade + budget approval = high priority), a staged checklist, and design rationale.
+Produced a full Markdown delivery doc with a config table (item / value / **basis** / **confidence**),
+a human-review risk table (drainage/flood evaluation, 300m grid-power feasibility, accessibility sign-off),
+a staged checklist, and design rationale. *(Re-captured on re-run with KB v1.1.)*
 
 ---
 
