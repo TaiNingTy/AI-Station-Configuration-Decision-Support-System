@@ -52,7 +52,7 @@
 | **[2 · 检索 + 规则校验](agents/02-rule-evaluation.md)** | 从知识库检索、做合规检查、识别风险 —— **KB grounded、不编造** | `evaluation.json` |
 | **[3 · 配置 + 文档](agents/03-configuration-doc.md)** | 推荐配置（参数 + 依据 + 置信度）、生成交付文档与 checklist | `proposal.md` |
 
-每个 Agent 的角色、提示词、输入输出契约见 [`agents/`](agents/)；它们调用的技能见 [`skills/`](skills/)。
+每个 Agent 的角色、提示词、输入输出契约见 [`agents/`](agents/)；它们调用的技能见 [`skills/`](skills/)。完整产品规格（范围、功能/非功能需求、指标、里程碑）：[`docs/PRD.md`](docs/PRD.md)。
 
 > 采用确定性流水线，而非自由自主交接 —— 企业场景下 **可控性与可评估性** 比自主性更重要，且错误容易定位到具体某个 Agent。
 
@@ -123,7 +123,7 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 ├── evals/                        可运行门禁评估 —— `node evals/run.js`（9/9）
 ├── results/                      sample-runs.md + 完整原始 trace（tc1 / tc2）
 ├── demo/                         运行证据（截图 + 视频链接）—— 补充中
-├── docs/                         build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
+├── docs/                         PRD · build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
 ├── AGENTS.md · CLAUDE.md         仓库指南 + 审查标准（给 AI 审查者）
 └── assets/                       架构图（svg / png / pdf，含深色 & 自适应版）
 ```

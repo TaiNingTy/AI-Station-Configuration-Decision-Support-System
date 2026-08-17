@@ -52,7 +52,7 @@ Site brief
 | **[2 · Retrieval + Rule Evaluation](agents/02-rule-evaluation.md)** | Retrieve from the knowledge base, check compliance, flag risks — **KB-grounded, no fabrication** | `evaluation.json` |
 | **[3 · Configuration + Documentation](agents/03-configuration-doc.md)** | Recommend config (value + basis + confidence), generate the delivery doc & checklist | `proposal.md` |
 
-Each agent's role, prompt, and I/O contract lives in [`agents/`](agents/); the capabilities they invoke are in [`skills/`](skills/).
+Each agent's role, prompt, and I/O contract lives in [`agents/`](agents/); the capabilities they invoke are in [`skills/`](skills/). Full product spec (scope, FR/NFR, metrics, milestones): [`docs/PRD.md`](docs/PRD.md).
 
 > Built as a deterministic pipeline rather than free autonomous hand-off — **controllability and evaluability** matter more than autonomy in an enterprise setting, and errors are easy to localize to a single agent.
 
@@ -123,7 +123,7 @@ The first version of Agent 2 *looked* authoritative but was **hallucinating** �
 ├── evals/                        runnable gate eval — `node evals/run.js` (9/9)
 ├── results/                      sample-runs.md + full raw traces (tc1 / tc2)
 ├── demo/                         run evidence (screenshots + video link) — capture in progress
-├── docs/                         build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
+├── docs/                         PRD · build-playbook · evaluation · product-decisions · rule-gate-plan · storyboard
 ├── AGENTS.md · CLAUDE.md         repo guide + review standard (for AI reviewers)
 └── assets/                       architecture diagram (svg / png / pdf, + dark & theme-adaptive)
 ```
