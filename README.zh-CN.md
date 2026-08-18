@@ -88,7 +88,7 @@ TC2 是全片论点的浓缩：**AI 识别出不可实施的方案、标为不�
 确定性门禁有**可运行**评估：`node evals/run.js` → 9/9（[`evals/`](evals/)）。
 每个设计选择背后的思考记录在 [`docs/product-decisions.md`](docs/product-decisions.md)。
 
-## 8. 我解决的 RAG 问题（最有价值的一段）
+## 8. 解决的 RAG 问题
 
 初版 Agent 2 *看起来*很权威，实则在**编造** —— 引用真实感的国标（GB/T、CJJ）和一个虚构案例，而这些都不在知识库里。
 
