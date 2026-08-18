@@ -2,7 +2,7 @@
 
 > 评估以**可验证断言 (PASS/FAIL)** 为主、主观打分为辅。
 
-## A. 可验证断言（逐案例判定）
+## A. 可验证断言
 
 | 断言 | Greenfield (TC1) | Central Hub (TC2) | Hilltop (TC3) |
 |---|---|---|---|
