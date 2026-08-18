@@ -8,7 +8,7 @@
 **平台：** 扣子 (Coze) agentic workflow 编排 + RAG 知识库 · **模型：** 豆包 2.0 Pro
 **模式：** 三个专业化 LLM Agent 组成固定流水线 + 人工复核交接 (human-review handoff)
 
-> **本公开 Demo 的范围：** V1 版本，用**合成数据**复现原工作流中的知识检索、规则校验、配置推荐与人工复核部分。空间/GIS 分析、专有优化逻辑、地区规则包**有意排除** —— 见[路线图](#9-路线图)。
+> **本公开 Demo 的范围：** V1 版本，用**合成数据**复现原工作流中的知识检索、规则校验、配置推荐与人工复核部分。
 
 <p align="center">
   <img src="assets/architecture_diagram.png" alt="架构图" width="900">
